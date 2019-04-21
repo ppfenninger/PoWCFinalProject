@@ -12,6 +12,11 @@
 % save('knownWN', 'knownWN'); 
 % 
 % dataBits = sign(wgn(64, 100, 0)); 
+% %Add pilots
+% dataBits(7,:)  =  sqrt(2) + sqrt(2)*1i;
+% dataBits(21,:) = -sqrt(2) + sqrt(2)*1i;
+% dataBits(44,:) = -sqrt(2) - sqrt(2)*1i;
+% dataBits(58,:) =  sqrt(2) - sqrt(2)*1i;
 % data = ifft(dataBits);
 % data = [data(end-15:end, :); data];
 % 
