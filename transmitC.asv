@@ -11,8 +11,19 @@ save('lts', 'lts');
 % 
 save('knownWN', 'knownWN'); 
 
-dataBits = sign(wgn(64, 100, 0)); 
-dataBits([7,21
+
+dataBitsRaw = sign(wgn(128, 100, 0)); 
+dataBits = zeros(64,100);
+for m = 1:100
+    for n = 1:64
+        if dataBitsRaw((n-1)*2+1:n*2
+    end
+end
+%Add pilots
+dataBits(7,:)  =  sqrt(2) + sqrt(2)*1i;
+dataBits(21,:) = -sqrt(2) + sqrt(2)*1i;
+dataBits(44,:) = -sqrt(2) - sqrt(2)*1i;
+dataBits(58,:) =  sqrt(2) - sqrt(2)*1i;
 data = ifft(dataBits);
 data = [data(end-15:end, :); data];
 

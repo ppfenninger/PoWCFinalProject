@@ -1,3 +1,5 @@
+clear;
+
 % Open the file containing the received samples
 f2 = fopen('tx.dat', 'rb');
  
@@ -64,20 +66,31 @@ angleOffset = (pilot7+pilot21+pilot44+pilot58)./4;
 
 dataF = dataF./exp(1j*angleOffset);
 
-dataHat = sign(real(dataF)); 
+dataHat    = zeros(128,100);
 
-load('dataBits'); 
+for m = 1:100
+    for n = 1:64
+        dataHat(2*(n-1)+1,m) = sign(real(dataF(n,m)));
+        dataHat(2*n,m) = sign(imag(dataF(n,m)));
+    end
+end
+
+load('dataBitsRaw'); 
 
 % totalWrong = reshape(dataHat, [1, 6400]) ~= reshape(dataBits, [1, 6400]);
-dataHat  = dataHat ([1:6,8:20,22:27,39:43,45:57,59:64], 1:95); 
-dataBits = dataBits([1:6,8:20,22:27,39:43,45:57,59:64], 1:95); 
+dataHat  = dataHat       ([1:12,15:40,43:54,77:86,89:114,117:128], 1:95); 
+dataBitsRaw = dataBitsRaw([1:12,15:40,43:54,77:86,89:114,117:128], 1:95);
+
+% Saved BPSK data chopping
+% dataBits = dataBits([1:6,8:20,22:27,39:43,45:57,59:64], 1:95);
+
 % dataHat = dataHat(:, 1:50); 
 % dataBits = dataBits(:, 1:50); 
-totalWrong = (dataHat ~= dataBits); 
+totalWrong = (dataHat ~= dataBitsRaw); 
 stem(totalWrong)
 % plot(reshape(totalWrong, [1, 5300]), '.'); 
 
-bitErrorRate = sum(sum(totalWrong)) / (49*95); 
+bitErrorRate = sum(sum(totalWrong)) / (49*95*2); 
 
 % stem(reshape(dataHat, [1, 64000]))
 % hold on
