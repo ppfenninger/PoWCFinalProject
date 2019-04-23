@@ -1,12 +1,13 @@
 clear;
 
 % Open the file containing the received samples
-f2 = fopen('rx.dat', 'rb');
+f2 = fopen('tx.dat', 'rb');
  
 % read data from the file
 tmp = fread(f2, 'float32');
 rx = tmp(1:2:end)+1i*tmp(2:2:end);
 rx = rx.';
+rx = rx(1000:end);
 
 % close the file
 fclose(f2);
