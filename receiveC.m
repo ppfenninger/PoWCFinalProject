@@ -1,7 +1,7 @@
 clear;
 
 % Open the file containing the received samples
-f2 = fopen('tx.dat', 'rb');
+f2 = fopen('rx.dat', 'rb');
  
 % read data from the file
 tmp = fread(f2, 'float32');

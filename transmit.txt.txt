@@ -1,0 +1,1 @@
+tx_samples_from_file --freq 2478e6 --rate 3e6 --type float --ant TX/RX --subdev A:A --gain 70 --file tx.dat
