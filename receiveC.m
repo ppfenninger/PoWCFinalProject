@@ -1,13 +1,14 @@
 clear;
+clf;
 
 % Open the file containing the received samples
-f2 = fopen('tx.dat', 'rb');
- 
-% read data from the file
+f2 = fopen('rx.dat', 'rb');
+%  
+% % read data from the file
 tmp = fread(f2, 'float32');
 rx = tmp(1:2:end)+1i*tmp(2:2:end);
 rx = rx.';
-rx = rx(1000:end);
+rx = rx(10000:end);
 
 % close the file
 fclose(f2);
@@ -16,6 +17,7 @@ fclose(f2);
 % tx = fread(f1, 'float32'); 
 
 load('tx'); 
+% rx = nonflat_channel_timing_error(tx.').';
 disp(length(rx));
 
 load('lts'); 
@@ -38,6 +40,7 @@ for m = 1:64
 end
 
 fDelta = fDeltaSum / (64^2); 
+disp(fDelta);
 rxLong = rx((startLag+192):(startLag + 8799 + 192)); 
 
 for k = 1:length(rxLong)
@@ -79,8 +82,8 @@ end
 load('dataBitsRaw'); 
 
 % totalWrong = reshape(dataHat, [1, 6400]) ~= reshape(dataBits, [1, 6400]);
-dataHat  = dataHat       ([1:12,15:40,43:54,77:86,89:114,117:128], 1:95); 
-dataBitsRaw = dataBitsRaw([1:12,15:40,43:54,77:86,89:114,117:128], 1:95);
+dataHat  = dataHat       ([1:12,15:40,43:54,77:86,89:114,117:128], 1:90); 
+dataBitsRaw = dataBitsRaw([1:12,15:40,43:54,77:86,89:114,117:128], 1:90);
 
 % Saved BPSK data chopping
 % dataBits = dataBits([1:6,8:20,22:27,39:43,45:57,59:64], 1:95);
@@ -88,10 +91,17 @@ dataBitsRaw = dataBitsRaw([1:12,15:40,43:54,77:86,89:114,117:128], 1:95);
 % dataHat = dataHat(:, 1:50); 
 % dataBits = dataBits(:, 1:50); 
 totalWrong = (dataHat ~= dataBitsRaw); 
-stem(totalWrong)
+x = linspace(1, length(totalWrong), length(totalWrong));
+stem(x./2, totalWrong)
 % plot(reshape(totalWrong, [1, 5300]), '.'); 
 
-bitErrorRate = sum(sum(totalWrong)) / (49*95*2); 
+bitErrorRate = sum(sum(totalWrong)) / (49*90*2); 
+
+figure;
+plot(abs(H))
+disp(bitErrorRate*100)
+% plot(abs(H([1:6, 7:20, 22:27, 38:43, 45:57, 59:64])))
+
 
 % stem(reshape(dataHat, [1, 64000]))
 % hold on

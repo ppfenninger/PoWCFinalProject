@@ -1,5 +1,6 @@
 % knownWNF = wgn(64, 10, 0);
-% knownWN = ifft(knownWNF); 
+% knownWNF = 0.5.*(sign(real(knownWNF)) + 1i*sign(imag(knownWNF)));
+% knownWN = ifft(knownWNF);
 % knownWN = [knownWN(end-15:end, :); knownWN];
 % 
 % ts = wgn(64, 1, 0, 'complex');
