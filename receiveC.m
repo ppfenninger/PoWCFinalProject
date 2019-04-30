@@ -2,13 +2,13 @@ clear;
 clf;
 
 % Open the file containing the received samples
-f2 = fopen('rx.dat', 'rb');
+f2 = fopen('tx.dat', 'rb');
 %  
 % % read data from the file
 tmp = fread(f2, 'float32');
 rx = tmp(1:2:end)+1i*tmp(2:2:end);
 rx = rx.';
-rx = rx(10000:end);
+%rx = rx(10000:end);
 
 % close the file
 fclose(f2);
@@ -70,12 +70,53 @@ angleOffset = (pilot7+pilot21+pilot44+pilot58)./4;
 
 dataF = dataF./exp(1j*angleOffset);
 
-dataHat    = zeros(128,100);
+dataHat    = zeros(64*4,100);
+
+dataF = dataF*2/sqrt(2); %Should scale to maximum of 1
 
 for m = 1:100
     for n = 1:64
-        dataHat(2*(n-1)+1,m) = sign(real(dataF(n,m)));
-        dataHat(2*n,m) = sign(imag(dataF(n,m)));
+        if real(dataF)>2/3
+            if imag(dataF)>2/3
+                dataHat((n-1)*4+1:n*4,m)=[1;1;1;1];
+            elseif imag(dataF)>0
+                dataHat((n-1)*4+1:n*4,m)=[1;1;1;-1];
+            elseif imag(dataF)>-2/3
+                dataHat((n-1)*4+1:n*4,m)=[1;1;-1;-1];
+            else
+                dataHat((n-1)*4+1:n*4,m)=[1;1;-1;1];
+            end
+        elseif real(dataF)>0
+            if imag(dataF)>2/3
+                dataHat((n-1)*4+1:n*4,m)=[1;-1;1;1];
+            elseif imag(dataF)>0
+                dataHat((n-1)*4+1:n*4,m)=[1;-1;1;-1];
+            elseif imag(dataF)>-2/3
+                dataHat((n-1)*4+1:n*4,m)=[1;-1;-1;-1];
+            else
+                dataHat((n-1)*4+1:n*4,m)=[1;-1;-1;1];
+            end
+        elseif real(dataF)>-2/3
+            if imag(dataF)>2/3
+                dataHat((n-1)*4+1:n*4,m)=[-1;-1;1;1];
+            elseif imag(dataF)>0
+                dataHat((n-1)*4+1:n*4,m)=[-1;-1;1;-1];
+            elseif imag(dataF)>-2/3
+                dataHat((n-1)*4+1:n*4,m)=[-1;-1;-1;-1];
+            else
+                dataHat((n-1)*4+1:n*4,m)=[-1;-1;-1;1];
+            end
+        else
+            if imag(dataF)>2/3
+                dataHat((n-1)*4+1:n*4,m)=[-1;1;1;1];
+            elseif imag(dataF)>0
+                dataHat((n-1)*4+1:n*4,m)=[-1;1;1;-1];
+            elseif imag(dataF)>-2/3
+                dataHat((n-1)*4+1:n*4,m)=[-1;1;-1;-1];
+            else
+                dataHat((n-1)*4+1:n*4,m)=[-1;1;-1;1];
+            end
+        end
     end
 end
 
