@@ -90,16 +90,16 @@ dataBitsRaw = dataBitsRaw.*bigBitsWeWant;
 
 
 dataHat( all(~dataHat,2), : ) = [];
-dataHat = dataHat(:, 1:100); 
+dataHat = dataHat(:, 1:80); 
 dataBitsRaw( all(~dataBitsRaw,2), : ) = [];
-dataBitsRaw = dataBitsRaw(:, 1:100); 
+dataBitsRaw = dataBitsRaw(:, 1:80); 
 
 totalWrong = (dataHat ~= dataBitsRaw); 
 x = linspace(1, length(totalWrong), length(totalWrong));
 stem(x./6, totalWrong)
 % plot(reshape(totalWrong, [1, 5300]), '.'); 
 
-bitErrorRate = sum(sum(totalWrong))/ (49*100*6); 
+bitErrorRate = sum(sum(totalWrong))/ (49*80*6); 
 
 figure;
 plot(abs(H))
