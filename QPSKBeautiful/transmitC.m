@@ -9,16 +9,31 @@ lts = [ts; ts; ts].';
 lts = 0.35.*lts; 
 
 save('lts', 'lts'); 
+% 
 save('knownWN', 'knownWN'); 
 
-dataBitsRaw = (sign(wgn(64*6, 100, 0)) + 1) /2;
-dataBits = qammod(dataBitsRaw, 64, 'gray', 'InputType', 'bit')./7; 
-plot(dataBits, '.'); 
 
-dataBits(7,:)  =  sqrt(1) + sqrt(1)*1i;
-dataBits(21,:) = -sqrt(1) + sqrt(1)*1i;
-dataBits(44,:) = -sqrt(1) - sqrt(1)*1i;
-dataBits(58,:) =  sqrt(1) - sqrt(1)*1i;
+dataBitsRaw = sign(wgn(128, 100, 0)); 
+dataBits = zeros(64,100);
+for m = 1:100
+    for n = 1:64
+        if isequal(dataBitsRaw((n-1)*2+1:n*2,m), [1;1])
+            dataBits(n,m) = 1+1i;
+        elseif isequal(dataBitsRaw((n-1)*2+1:n*2,m), [-1;1])
+            dataBits(n,m) = -1+1i;
+        elseif isequal(dataBitsRaw((n-1)*2+1:n*2,m), [-1;-1])
+            dataBits(n,m) = -1-1i;
+        elseif isequal(dataBitsRaw((n-1)*2+1:n*2,m), [1;-1])
+            dataBits(n,m) = 1-1i;
+        end
+    end
+end
+dataBits = dataBits*sqrt(2);
+%Add pilots
+dataBits(7,:)  =  sqrt(2) + sqrt(2)*1i;
+dataBits(21,:) = -sqrt(2) + sqrt(2)*1i;
+dataBits(44,:) = -sqrt(2) - sqrt(2)*1i;
+dataBits(58,:) =  sqrt(2) - sqrt(2)*1i;
 dataBits = dataBits.*0.5;
 data = ifft(dataBits);
 data = [data(end-15:end, :); data];
